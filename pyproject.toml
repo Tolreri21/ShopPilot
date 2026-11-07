@@ -1,0 +1,46 @@
+[project]
+name = "shoppilot"
+version = "0.1.0"
+description = "Agentic shopping assistant: hybrid retrieval, learning-to-rank and a tool-using LLM agent, evaluated on Amazon ESCI"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+authors = [{ name = "Anatoli Perederii" }]
+dependencies = [
+    "httpx>=0.28.1",
+    "numpy>=2.5.4",
+    "pandas>=3.1.1",
+    "psycopg[binary]>=3.3.8",
+    "pyarrow>=26.0.1",
+    "pydantic-settings>=2.16.2",
+    "scipy>=1.18.1",
+    "tqdm>=4.70.1",
+    "zstandard>=0.25.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+    "ruff>=0.17.4",
+]
+notebooks = [
+    "ipykernel>=7.4.0",
+    "matplotlib>=3.11.2",
+    "seaborn>=0.13.2",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+default-groups = ["dev", "notebooks"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
