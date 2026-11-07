@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:0.8.7-pg16
+        env:
+          POSTGRES_USER: shoppilot
+          POSTGRES_PASSWORD: shoppilot
+          POSTGRES_DB: shoppilot
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U shoppilot -d shoppilot"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 20
+    env:
+      DATABASE_URL: postgresql://shoppilot:shoppilot@localhost:5432/shoppilot
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          enable-cache: true
+      - run: uv sync --locked --no-group notebooks
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run pytest
