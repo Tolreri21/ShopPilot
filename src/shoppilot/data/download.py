@@ -24,9 +24,9 @@ def download(url: str, path: Path) -> None:
             for chunk in response.iter_bytes(1024 * 1024):
                 f.write(chunk)
                 bar.update(len(chunk))
+        if total and response.num_bytes_downloaded != total:
+            raise RuntimeError(f"{path.name} is incomplete, run again")
 
-    if total and tmp.stat().st_size != total:
-        raise RuntimeError(f"{path.name} is incomplete, run again")
     tmp.rename(path)
 
 
