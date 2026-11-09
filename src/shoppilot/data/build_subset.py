@@ -34,7 +34,7 @@ def main():
     products = pd.read_parquet(
         settings.data_dir / "raw/shopping_queries_dataset_products.parquet",
         columns=["product_id", "product_title", "product_bullet_point", "product_brand"],
-        filters=[("product_id", "in", product_ids),("product_locale", "==", "us")],
+        filters=[("product_id", "in", product_ids), ("product_locale", "==", "us")],
     )
     (settings.data_dir / "processed").mkdir(parents=True, exist_ok=True)
 
