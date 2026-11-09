@@ -1,3 +1,10 @@
+import re
+
+import numpy as np
+import pandas as pd
+
+from shoppilot.config import settings
+
 PRODUCT_GROUPS = {
     "premium": {
         "price_range": (150, 1500),
@@ -111,7 +118,6 @@ PRODUCT_GROUPS = {
             "poster",
             "pen",
             "pencil",
-            "notebook",
             "journal",
             "book",
             "mug",
@@ -129,7 +135,6 @@ PRODUCT_GROUPS = {
             "toy",
             "plush",
             "puzzle",
-            "card",
             "pillowcase",
             "towel",
             "napkin",
@@ -150,3 +155,38 @@ PRODUCT_GROUPS = {
         "keywords": [],
     },
 }
+
+
+def assign_tier(title: str) -> str:
+    lower_title = title.lower()
+    for group in ["cheap", "mid", "premium"]:
+        for word in PRODUCT_GROUPS[group]["keywords"]:
+            if re.search(rf"\b{word}s?\b", lower_title):
+                return group
+    return "default"
+
+
+def main():
+    rng = np.random.default_rng(settings.seed)
+    products = pd.read_parquet(
+        settings.data_dir / "processed/products.parquet",
+    )
+    products["tier"] = products["product_title"].apply(assign_tier)
+
+    low = products["tier"].map(lambda t: PRODUCT_GROUPS[t]["price_range"][0])
+    high = products["tier"].map(lambda t: PRODUCT_GROUPS[t]["price_range"][1])
+
+    products["price"] = rng.uniform(low, high)
+    products["price"] = products["price"].round(2)
+    products["price_source"] = "rules"
+    products["in_stock"] = rng.random(products.shape[0]) > 0.12
+
+    products[["product_id", "price", "price_source", "in_stock"]].to_parquet(
+        settings.data_dir / "processed/store.parquet"
+    )
+    print(products["tier"].value_counts())
+    print(products.groupby("tier")["price"].median())
+
+
+if __name__ == "__main__":
+    main()
