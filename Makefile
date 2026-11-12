@@ -1,4 +1,4 @@
-.PHONY: setup lint format test up down data
+.PHONY: setup lint format test up down data subset embed eval prices
 
 setup:
 	uv sync
@@ -22,3 +22,16 @@ down:
 
 data:
 	uv run python -m shoppilot.data.download
+
+subset:
+	uv run python -m shoppilot.data.build_subset
+	uv run python -m shoppilot.data.simulate
+
+embed:
+	uv run python -m shoppilot.search.dense
+
+eval:
+	uv run python -m shoppilot.eval.search_eval
+
+prices:
+	uv run python -m shoppilot.data.knn_price
