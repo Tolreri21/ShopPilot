@@ -70,3 +70,21 @@ predict a price for every product with kNN regression on title embeddings (log p
 | kNN, k=10 | 0.681 |
 
 Prices are a simulation for the demo shop, not real Amazon prices.
+
+## API
+
+Postgres 16 + pgvector, schema managed with Alembic (tables + HNSW index on embeddings).
+
+`GET /search?q=knife set&max_price=50&in_stock=true&limit=10`:
+1. BM25 top 100 from an in-memory `bm25s` index;
+2. pgvector top 100 by cosine distance, with the price and stock filters in SQL;
+3. the union of candidates is re-ranked by the LightGBM model.
+
+`GET /products/{product_id}` returns one product.
+
+```bash
+make up        # Postgres
+make index     # artifacts/bm25
+make load      # alembic upgrade head + load 147k products with embeddings
+make api       # http://localhost:8000/docs
+```
