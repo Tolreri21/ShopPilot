@@ -9,11 +9,11 @@ from shoppilot.search.dense import INSTRUCTION, encode, load_model
 from shoppilot.search.hybrid import rrf
 
 
-def load_test_pairs(products: pd.DataFrame) -> pd.DataFrame:
+def load_pairs(products: pd.DataFrame, split: str) -> pd.DataFrame:
     queries = pd.read_parquet(settings.data_dir / "processed/queries.parquet")
     judgements = pd.read_parquet(settings.data_dir / "processed/judgements.parquet")
-    test_queries = queries[queries["split"] == "test"]
-    pairs = judgements.merge(test_queries[["query_id", "query"]], on="query_id")
+    split_queries = queries[queries["split"] == split]
+    pairs = judgements.merge(split_queries[["query_id", "query"]], on="query_id")
     positions = pd.Series(range(len(products)), index=products["product_id"])
     pairs["position"] = pairs["product_id"].map(positions)
     return pairs.reset_index(drop=True)
@@ -37,7 +37,7 @@ def add_dense(pairs: pd.DataFrame, column: str, prefix: str) -> None:
 
 def main() -> None:
     products = pd.read_parquet(settings.data_dir / "processed/products.parquet")
-    pairs = load_test_pairs(products)
+    pairs = load_pairs(products, "test")
 
     rng = np.random.default_rng(settings.seed)
     pairs["random"] = rng.random(len(pairs))

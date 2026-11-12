@@ -23,3 +23,8 @@ def test_matching_document_gets_highest_score():
 def test_unknown_words_give_zero():
     retriever = build_index(["red running shoes", "blue phone case"])
     assert bm25_scores(retriever, "laptop").sum() == 0
+
+
+def test_stopwords_only_query_gives_zero():
+    retriever = build_index(["red running shoes", "blue phone case"])
+    assert bm25_scores(retriever, "the").tolist() == [0.0, 0.0]
