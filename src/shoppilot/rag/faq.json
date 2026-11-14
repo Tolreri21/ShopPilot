@@ -1,0 +1,17 @@
+[
+  {"question": "How long does shipping take?", "answer": "Standard shipping takes 3-5 business days. Express shipping takes 1-2 business days."},
+  {"question": "How much does shipping cost?", "answer": "Standard shipping is free for orders over $35, otherwise it costs $5.99. Express shipping costs $12.99."},
+  {"question": "Do you ship internationally?", "answer": "No, ShopPilot only ships to addresses in the United States."},
+  {"question": "Can I return an item?", "answer": "Yes, most items can be returned within 30 days of delivery if they are unused and in the original packaging."},
+  {"question": "How do I get a refund?", "answer": "Refunds are sent to the original payment method within 5-7 business days after we receive the returned item."},
+  {"question": "Who pays for return shipping?", "answer": "Return shipping is free if the item is damaged or wrong. Otherwise a $4.99 return fee is taken from the refund."},
+  {"question": "Which payment methods do you accept?", "answer": "We accept Visa, Mastercard, American Express, PayPal and Apple Pay."},
+  {"question": "Can I cancel my order?", "answer": "Orders can be cancelled within 1 hour after checkout. After that the order is already packed and has to be returned."},
+  {"question": "How do I track my order?", "answer": "A tracking number is sent by email when the order ships. You can also see it on the order page."},
+  {"question": "What if an item is out of stock?", "answer": "Out of stock items cannot be added to the cart. Most items are restocked within 2 weeks."},
+  {"question": "Do products have a warranty?", "answer": "Electronics have a 1 year manufacturer warranty. Other products are covered by the 30 day return policy."},
+  {"question": "Do you price match?", "answer": "No, we do not match prices from other stores."},
+  {"question": "Are the prices real?", "answer": "No. ShopPilot is a demo shop and prices are simulated from similar products."},
+  {"question": "Do you sell gift cards?", "answer": "Yes, digital gift cards from $10 to $500 are available. They never expire."},
+  {"question": "How do I contact support?", "answer": "Write to support@shoppilot.example or use the chat. Support answers within 24 hours."}
+]
