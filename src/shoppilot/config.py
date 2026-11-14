@@ -9,6 +9,8 @@ class Settings(BaseSettings):
     database_url: str = "postgresql://shoppilot:shoppilot@localhost:5432/shoppilot"
     data_dir: Path = Path("data")
     seed: int = 42
+    gemini_api_key: str = ""
+    gemini_model: str = "gemini-3.5-flash"
 
 
 settings = Settings()
