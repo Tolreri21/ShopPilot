@@ -8,6 +8,7 @@ from shoppilot.config import settings
 from shoppilot.db.models import Product
 from shoppilot.db.session import Session
 from shoppilot.eval.metrics import GAINS
+from shoppilot.rag.faq import nearest_faq
 from shoppilot.ranking.features import FEATURES, add_features
 from shoppilot.ranking.train import LABELS
 from shoppilot.search.bm25 import bm25_scores
@@ -91,3 +92,6 @@ class Searcher:
         with Session() as session:
             product = session.get(Product, product_id)
             return None if product is None else to_dict(product)
+
+    def faq(self, question: str, k: int = 3) -> list[dict]:
+        return nearest_faq(encode(self.model, [INSTRUCTION + question])[0], k)
