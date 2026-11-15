@@ -1,4 +1,5 @@
 import pytest
+from langchain_core.language_models.fake_chat_models import GenericFakeChatModel
 
 CASE = {
     "product_id": "B001",
@@ -24,3 +25,13 @@ class FakeSearcher:
 @pytest.fixture
 def searcher():
     return FakeSearcher()
+
+
+class FakeLLM(GenericFakeChatModel):
+    def bind_tools(self, tools, **kwargs):
+        return self
+
+
+@pytest.fixture
+def make_llm():
+    return lambda *answers: FakeLLM(messages=iter(answers))
