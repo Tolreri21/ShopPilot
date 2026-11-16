@@ -18,5 +18,24 @@ services:
       timeout: 3s
       retries: 20
 
+  api:
+    build: .
+    profiles: ["api"]
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      DATABASE_URL: postgresql://shoppilot:shoppilot@db:5432/shoppilot
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data:ro
+      - ./artifacts:/app/artifacts:ro
+      - hf-cache:/root/.cache/huggingface
+
 volumes:
   pgdata:
+  hf-cache:
