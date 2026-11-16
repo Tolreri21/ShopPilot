@@ -89,6 +89,15 @@ make load      # alembic upgrade head + load 147k products with embeddings
 make api       # http://localhost:8000/docs
 ```
 
+### Docker
+
+The API also runs in a container (CPU-only torch, ~2.5 GB image). `data/` and `artifacts/` are
+mounted read-only, so run `make subset embed prices features train index` and `make load faq` first.
+
+```bash
+make docker-api   # builds the image, runs migrations, serves http://localhost:8000
+```
+
 ## Agent
 
 A LangChain `create_agent` (LangGraph ReAct loop) on Gemini with 5 tools: `search_products`
