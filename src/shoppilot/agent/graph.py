@@ -27,7 +27,10 @@ def build_agent(llm, tools):
     return create_agent(llm, tools, system_prompt=SYSTEM_PROMPT, checkpointer=memory)
 
 
-def ask(agent, cart_id: int, message: str) -> str:
+def run(agent, cart_id: int, message: str) -> list:
     config = {"configurable": {"thread_id": str(cart_id)}}
-    result = agent.invoke({"messages": [{"role": "user", "content": message}]}, config)
-    return result["messages"][-1].text
+    return agent.invoke({"messages": [{"role": "user", "content": message}]}, config)["messages"]
+
+
+def ask(agent, cart_id: int, message: str) -> str:
+    return run(agent, cart_id, message)[-1].text
