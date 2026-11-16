@@ -1,4 +1,4 @@
-.PHONY: setup lint format test up down data subset embed eval prices features train index migrate load faq faq-eval agent-eval api
+.PHONY: setup lint format test up down data subset embed eval prices features train index migrate load faq faq-eval agent-eval api docker-api
 
 setup:
 	uv sync
@@ -62,3 +62,6 @@ agent-eval:
 
 api:
 	uv run uvicorn shoppilot.api.main:app --reload
+
+docker-api:
+	docker compose --profile api up -d --build --wait
