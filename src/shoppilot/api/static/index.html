@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ShopPilot</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 0; background: #f6f6f4; color: #222; }
+  main { display: grid; grid-template-columns: 1fr 320px; gap: 16px; max-width: 1000px; margin: 0 auto; padding: 16px; }
+  section { background: #fff; border-radius: 8px; padding: 16px; }
+  #messages { height: 60vh; overflow-y: auto; }
+  .user { text-align: right; margin: 8px 0; }
+  .bot { margin: 8px 0; }
+  .user span, .bot span { display: inline-block; padding: 8px 12px; border-radius: 8px; white-space: pre-wrap; max-width: 80%; text-align: left; }
+  .user span { background: #dbe8ff; }
+  .bot span { background: #eee; }
+  form { display: flex; gap: 8px; margin-top: 12px; }
+  input { flex: 1; min-width: 0; padding: 8px; font-size: 16px; }
+  button { padding: 8px 14px; font-size: 16px; cursor: pointer; }
+  li { margin-bottom: 6px; }
+  @media (max-width: 700px) { main { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<main>
+  <section>
+    <h2>ShopPilot</h2>
+    <div id="messages"></div>
+    <form id="chat">
+      <input id="text" placeholder="e.g. knife set under $40" autocomplete="off">
+      <button>Send</button>
+    </form>
+  </section>
+  <section>
+    <h3>Cart</h3>
+    <ul id="items"></ul>
+    <p id="total"></p>
+    <button id="checkout">Checkout</button>
+    <p id="order"></p>
+  </section>
+</main>
+<script>
+let cartId = null;
+
+function addMessage(role, text) {
+  const div = document.createElement("div");
+  div.className = role;
+  const span = document.createElement("span");
+  span.textContent = text;
+  div.appendChild(span);
+  const box = document.getElementById("messages");
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+
+async function newCart() {
+  const response = await fetch("/carts", { method: "POST" });
+  cartId = (await response.json()).cart_id;
+  await showCart();
+}
+
+async function showCart() {
+  const cart = await (await fetch(`/carts/${cartId}`)).json();
+  const list = document.getElementById("items");
+  list.innerHTML = "";
+  for (const item of cart.items) {
+    const li = document.createElement("li");
+    li.textContent = `${item.quantity} x ${item.title.slice(0, 60)} - $${item.price.toFixed(2)}`;
+    list.appendChild(li);
+  }
+  document.getElementById("total").textContent = `Total: $${cart.total.toFixed(2)}`;
+}
+
+document.getElementById("chat").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const input = document.getElementById("text");
+  const message = input.value.trim();
+  if (!message) return;
+  input.value = "";
+  addMessage("user", message);
+  const response = await fetch("/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ cart_id: cartId, message }),
+  });
+  const data = await response.json();
+  addMessage("bot", response.ok ? data.answer : `Error: ${JSON.stringify(data.detail)}`);
+  await showCart();
+});
+
+document.getElementById("checkout").addEventListener("click", async () => {
+  const response = await fetch(`/carts/${cartId}/checkout`, { method: "POST" });
+  const data = await response.json();
+  const order = document.getElementById("order");
+  if (!response.ok) {
+    order.textContent = data.detail;
+    return;
+  }
+  order.textContent = `Order #${data.order_id} placed, $${data.total.toFixed(2)}. New cart started.`;
+  await newCart();
+});
+
+newCart();
+</script>
+</body>
+</html>
