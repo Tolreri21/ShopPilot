@@ -114,6 +114,9 @@ at the cart, so a person always confirms the payment step.
 | `GET /carts/{cart_id}` | items and total |
 | `POST /carts/{cart_id}/checkout` | creates an order |
 
+`GET /` is a small chat page: chat on the left, the cart on the right and a Checkout button, so
+the order is always placed by the person, not by the agent.
+
 ### FAQ retrieval
 
 `shop_faq` searches 15 shop policy entries (shipping, returns, payment...) with pgvector. Tested on

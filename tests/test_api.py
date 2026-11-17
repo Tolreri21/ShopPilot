@@ -58,3 +58,9 @@ def test_get_product(fake):
 
 def test_unknown_product_is_404(fake):
     assert client.get("/products/nope").status_code == 404
+
+
+def test_index_page():
+    response = client.get("/")
+    assert response.status_code == 200
+    assert "<title>ShopPilot</title>" in response.text
