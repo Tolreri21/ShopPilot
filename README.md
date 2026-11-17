@@ -36,10 +36,26 @@ C=0.01, I=0. Dev subset: 2000 test queries, 40k judged pairs, seed 42.
 | Embeddings (bge-small, title) | 0.724 |
 | Embeddings + query instruction | 0.728 |
 | Hybrid RRF (BM25 + embeddings) | 0.725 |
+| Hybrid + LightGBM re-ranker | 0.728 |
 
 ```bash
 make embed   # product title embeddings -> data/processed/product_vectors.npy
 make eval    # prints the table above
+```
+
+### LightGBM re-ranker
+
+A `LGBMClassifier` predicts the ESCI label of a (query, product) pair from 8 features: BM25 score
+and rank, embedding cosine and rank, share of query words in the title, brand in query, title
+length and query length. Products are sorted by expected gain
+`P(E) + 0.1 * P(S) + 0.01 * P(C)`. It is trained on 6000 train queries, with early stopping on a
+20% validation split grouped by query, and evaluated on the 2000 test queries.
+
+Top features by gain: embedding cosine (48%), word overlap (12%), query length (11%).
+
+```bash
+make features   # data/processed/features_{train,test}.parquet
+make train      # prints nDCG@10 and saves artifacts/ranker.txt
 ```
 
 ## Prices
