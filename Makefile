@@ -1,4 +1,4 @@
-.PHONY: setup lint format test up down data subset embed eval prices features train index migrate load api
+.PHONY: setup lint format test up down data subset embed eval prices features train index migrate load faq faq-eval api
 
 setup:
 	uv sync
@@ -50,6 +50,12 @@ migrate:
 
 load: migrate
 	uv run python -m shoppilot.db.load
+
+faq: migrate
+	uv run python -m shoppilot.rag.faq
+
+faq-eval:
+	uv run python -m shoppilot.rag.faq_eval
 
 api:
 	uv run uvicorn shoppilot.api.main:app --reload

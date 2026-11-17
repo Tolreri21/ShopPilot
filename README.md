@@ -88,3 +88,38 @@ make index     # artifacts/bm25
 make load      # alembic upgrade head + load 147k products with embeddings
 make api       # http://localhost:8000/docs
 ```
+
+## Agent
+
+A LangChain `create_agent` (LangGraph ReAct loop) on Gemini with 5 tools: `search_products`
+(the search above), `product_details`, `add_to_cart`, `view_cart` and `shop_faq`. Chat history
+is kept per cart with an in-memory LangGraph checkpointer.
+
+The agent cannot place orders. Checkout is a separate endpoint the customer calls after looking
+at the cart, so a person always confirms the payment step.
+
+| Endpoint | |
+|---|---|
+| `POST /carts` | new cart, returns `cart_id` |
+| `POST /chat` | `{"cart_id": 1, "message": "..."}`, returns the agent answer |
+| `GET /carts/{cart_id}` | items and total |
+| `POST /carts/{cart_id}/checkout` | creates an order |
+
+### FAQ retrieval
+
+`shop_faq` searches 15 shop policy entries (shipping, returns, payment...) with pgvector. Tested on
+20 paraphrased customer questions:
+
+| FAQ text | Query instruction | Hit@1 | Hit@3 |
+|---|---|---|---|
+| question | no | 0.85 | 0.90 |
+| question | yes | 0.80 | 0.95 |
+| question + answer | no | 0.80 | 1.00 |
+| question + answer | yes | 0.95 | 1.00 |
+
+```bash
+cp .env.example .env   # add GEMINI_API_KEY from https://aistudio.google.com/apikey
+make faq               # embed and load the faq
+make faq-eval          # prints the table above
+make api
+```

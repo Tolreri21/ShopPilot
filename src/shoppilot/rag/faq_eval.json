@@ -1,0 +1,22 @@
+[
+  {"question": "when will my package arrive", "faq": 0},
+  {"question": "is delivery free", "faq": 1},
+  {"question": "can you send it to Canada", "faq": 2},
+  {"question": "I want to send back the shoes I bought", "faq": 3},
+  {"question": "when do I get my money back", "faq": 4},
+  {"question": "do I have to pay to return a broken item", "faq": 5},
+  {"question": "can I pay with paypal", "faq": 6},
+  {"question": "I ordered by mistake, can I undo it", "faq": 7},
+  {"question": "where is my order now", "faq": 8},
+  {"question": "the item I want is sold out", "faq": 9},
+  {"question": "my headphones stopped working after 3 months", "faq": 10},
+  {"question": "walmart has it cheaper, can you lower the price", "faq": 11},
+  {"question": "are these real amazon prices", "faq": 12},
+  {"question": "I want to buy a present card for my friend", "faq": 13},
+  {"question": "how can I talk to a human", "faq": 14},
+  {"question": "how fast is express delivery", "faq": 0},
+  {"question": "what is the return window", "faq": 3},
+  {"question": "do you take credit cards", "faq": 6},
+  {"question": "is there a guarantee on electronics", "faq": 10},
+  {"question": "support email", "faq": 14}
+]
