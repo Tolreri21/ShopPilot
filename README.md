@@ -123,3 +123,19 @@ make faq               # embed and load the faq
 make faq-eval          # prints the table above
 make api
 ```
+
+### Agent evaluation
+
+20 single-turn scenarios in `src/shoppilot/agent/scenarios.json`: catalog search with price and
+stock filters, product details, cart actions, shop policies and 6 messages where the agent should
+not call any tool (greetings, off-topic, "pay for me", prompt injection). Each scenario runs
+with a new cart.
+
+- **tool accuracy**: the first tool call is the expected one (or no call when none is expected);
+- **argument accuracy**: the expected arguments are passed, e.g. `max_price=40` for "under $40";
+- **grounded answers**: every product id in the answer came from the user message or a tool
+  output, so the agent did not invent products.
+
+```bash
+make agent-eval   # needs GEMINI_API_KEY, ~4 min because of free tier rate limits
+```
