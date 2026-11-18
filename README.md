@@ -5,6 +5,12 @@ tool-using LLM agent with human-in-the-loop checkout. Every component is evaluat
 [Amazon ESCI](https://github.com/amazon-science/esci-data) relevance labels, extended with prices,
 ratings and reviews from [ESCI-S](https://github.com/shuttie/esci-s).
 
+![ShopPilot demo](docs/demo.gif)
+
+The chat page in action: search with a price filter, add to cart, FAQ, checkout by the user
+([mp4 with sound](docs/demo.mp4)). Products and prices come from a real search run; the agent
+replies in the clip are scripted.
+
 > Work in progress.
 
 ## Quickstart
