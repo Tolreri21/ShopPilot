@@ -6,7 +6,7 @@ from sqlalchemy.exc import OperationalError
 from alembic import command
 from shoppilot.db.models import Cart, CartItem, Order, Product
 from shoppilot.db.session import Session, engine
-from shoppilot.shop.cart import add_item, cart_contents, checkout, create_cart
+from shoppilot.shop.cart import add_item, cart_contents, checkout, create_cart, remove_item
 
 TEST_PRODUCTS = ["TEST-CASE", "TEST-SOLD-OUT"]
 
@@ -64,6 +64,21 @@ def test_checkout_once(cart_id):
     assert checkout(cart_id)["total"] == 10.5
     with pytest.raises(ValueError, match="already checked out"):
         add_item(cart_id, "TEST-CASE")
+
+
+def test_remove_item(cart_id):
+    add_item(cart_id, "TEST-CASE", 2)
+    remove_item(cart_id, "TEST-CASE")
+    assert cart_contents(cart_id) == {"cart_id": cart_id, "items": [], "total": 0}
+    with pytest.raises(ValueError, match="not found in cart"):
+        remove_item(cart_id, "TEST-CASE")
+
+
+def test_cannot_remove_after_checkout(cart_id):
+    add_item(cart_id, "TEST-CASE")
+    checkout(cart_id)
+    with pytest.raises(ValueError, match="already checked out"):
+        remove_item(cart_id, "TEST-CASE")
 
 
 def test_unknown_cart(cart_id):
