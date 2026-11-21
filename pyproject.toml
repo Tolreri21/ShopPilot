@@ -6,17 +6,26 @@ readme = "README.md"
 requires-python = ">=3.12,<3.13"
 authors = [{ name = "Anatoli Perederii" }]
 dependencies = [
+    "alembic>=1.20.1",
     "bm25s>=0.3.16",
+    "fastapi>=0.162.5",
     "httpx>=0.28.1",
+    "langchain>=1.5.0",
+    "langchain-google-genai>=4.5.0",
+    "lightgbm>=4.7.0",
     "numpy>=2.5.4",
     "pandas>=3.1.1",
+    "pgvector>=0.5.1",
     "psycopg[binary]>=3.3.8",
     "pyarrow>=26.0.1",
     "pydantic-settings>=2.16.2",
     "scikit-learn>=1.9.1",
     "scipy>=1.18.1",
     "sentence-transformers>=6.2.0",
+    "sqlalchemy>=2.1.8",
+    "torch>=2.15.0",
     "tqdm>=4.70.1",
+    "uvicorn>=0.54.0",
     "zstandard>=0.25.0",
 ]
 
@@ -47,3 +56,11 @@ select = ["E", "F", "I", "UP"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
