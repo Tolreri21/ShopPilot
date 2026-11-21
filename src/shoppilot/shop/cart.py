@@ -39,6 +39,18 @@ def add_item(cart_id: int, product_id: str, quantity: int = 1) -> None:
         session.commit()
 
 
+def remove_item(cart_id: int, product_id: str) -> None:
+    with Session() as session:
+        check_cart(session, cart_id)
+        item = session.scalar(
+            select(CartItem).where(CartItem.cart_id == cart_id, CartItem.product_id == product_id)
+        )
+        if item is None:
+            raise ValueError("product not found in cart")
+        session.delete(item)
+        session.commit()
+
+
 def cart_contents(cart_id: int) -> dict:
     with Session() as session:
         if session.get(Cart, cart_id) is None:

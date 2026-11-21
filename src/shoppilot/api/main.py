@@ -74,6 +74,15 @@ def get_cart(cart_id: int):
         raise shop_error(error)
 
 
+@app.delete("/carts/{cart_id}/items/{product_id}", response_model=CartOut)
+def remove_from_cart(cart_id: int, product_id: str):
+    try:
+        cart.remove_item(cart_id, product_id)
+        return cart.cart_contents(cart_id)
+    except ValueError as error:
+        raise shop_error(error)
+
+
 @app.post("/carts/{cart_id}/checkout", response_model=OrderOut)
 def checkout(cart_id: int):
     try:
