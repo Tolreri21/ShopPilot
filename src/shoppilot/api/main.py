@@ -1,6 +1,8 @@
 from functools import lru_cache
+from pathlib import Path
 
 from fastapi import Depends, FastAPI, HTTPException, Query
+from fastapi.responses import FileResponse
 
 from shoppilot.agent.graph import ask, build_agent, load_llm
 from shoppilot.agent.tools import make_tools
@@ -9,6 +11,7 @@ from shoppilot.search.service import Searcher
 from shoppilot.shop import cart
 
 app = FastAPI(title="ShopPilot")
+INDEX_PAGE = Path(__file__).with_name("static") / "index.html"
 
 
 @lru_cache
@@ -27,6 +30,11 @@ def get_llm():
 def shop_error(error: ValueError) -> HTTPException:
     status = 404 if "not found" in str(error) else 400
     return HTTPException(status_code=status, detail=str(error))
+
+
+@app.get("/", include_in_schema=False)
+def index():
+    return FileResponse(INDEX_PAGE)
 
 
 @app.get("/health")
@@ -61,6 +69,15 @@ def create_cart() -> dict:
 @app.get("/carts/{cart_id}", response_model=CartOut)
 def get_cart(cart_id: int):
     try:
+        return cart.cart_contents(cart_id)
+    except ValueError as error:
+        raise shop_error(error)
+
+
+@app.delete("/carts/{cart_id}/items/{product_id}", response_model=CartOut)
+def remove_from_cart(cart_id: int, product_id: str):
+    try:
+        cart.remove_item(cart_id, product_id)
         return cart.cart_contents(cart_id)
     except ValueError as error:
         raise shop_error(error)

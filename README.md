@@ -5,6 +5,12 @@ tool-using LLM agent with human-in-the-loop checkout. Every component is evaluat
 [Amazon ESCI](https://github.com/amazon-science/esci-data) relevance labels, extended with prices,
 ratings and reviews from [ESCI-S](https://github.com/shuttie/esci-s).
 
+![ShopPilot demo](docs/demo.gif)
+
+The chat page in action: search with a price filter, add to cart, FAQ, checkout by the user
+([mp4 with sound](docs/demo.mp4)). Products and prices come from a real search run; the agent
+replies in the clip are scripted.
+
 > Work in progress.
 
 ## Quickstart
@@ -89,6 +95,15 @@ make load      # alembic upgrade head + load 147k products with embeddings
 make api       # http://localhost:8000/docs
 ```
 
+### Docker
+
+The API also runs in a container (CPU-only torch, ~2.5 GB image). `data/` and `artifacts/` are
+mounted read-only, so run `make subset embed prices features train index` and `make load faq` first.
+
+```bash
+make docker-api   # builds the image, runs migrations, serves http://localhost:8000
+```
+
 ## Agent
 
 A LangChain `create_agent` (LangGraph ReAct loop) on Gemini with 5 tools: `search_products`
@@ -103,7 +118,11 @@ at the cart, so a person always confirms the payment step.
 | `POST /carts` | new cart, returns `cart_id` |
 | `POST /chat` | `{"cart_id": 1, "message": "..."}`, returns the agent answer |
 | `GET /carts/{cart_id}` | items and total |
+| `DELETE /carts/{cart_id}/items/{product_id}` | removes a product, returns the cart |
 | `POST /carts/{cart_id}/checkout` | creates an order |
+
+`GET /` is a small chat page: chat on the left, the cart on the right with a remove button per
+item and a Checkout button, so the order is always placed by the person, not by the agent.
 
 ### FAQ retrieval
 

@@ -1,0 +1,10 @@
+.git
+.venv
+.idea
+data
+artifacts
+mentor
+notebooks
+tests
+**/__pycache__
+.env
