@@ -18,6 +18,7 @@
   input { flex: 1; min-width: 0; padding: 8px; font-size: 16px; }
   button { padding: 8px 14px; font-size: 16px; cursor: pointer; }
   li { margin-bottom: 6px; }
+  li .remove { padding: 0 6px; margin-left: 6px; font-size: 14px; }
   @media (max-width: 700px) { main { grid-template-columns: 1fr; } }
 </style>
 </head>
@@ -66,9 +67,20 @@ async function showCart() {
   for (const item of cart.items) {
     const li = document.createElement("li");
     li.textContent = `${item.quantity} x ${item.title.slice(0, 60)} - $${item.price.toFixed(2)}`;
+    const remove = document.createElement("button");
+    remove.className = "remove";
+    remove.textContent = "×";
+    remove.title = "Remove from cart";
+    remove.addEventListener("click", () => removeItem(item.product_id));
+    li.appendChild(remove);
     list.appendChild(li);
   }
   document.getElementById("total").textContent = `Total: $${cart.total.toFixed(2)}`;
+}
+
+async function removeItem(productId) {
+  await fetch(`/carts/${cartId}/items/${encodeURIComponent(productId)}`, { method: "DELETE" });
+  await showCart();
 }
 
 document.getElementById("chat").addEventListener("submit", async (event) => {
